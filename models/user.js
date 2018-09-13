@@ -1,4 +1,4 @@
-'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     username: { type: DataTypes.STRING, allowNull: false },
@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     middleName: DataTypes.STRING
   }, {});
   User.associate = (models) => {
-    // associations can be defined here
+    User.belongsTo(models.Permission, {
+      as: 'permission'
+    });
   };
   return User;
 };
