@@ -6,7 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     D: DataTypes.BOOLEAN
   }, {});
   Setting.associate = (models) => {
-    Setting.hasOne(models.Permission);
+    Setting.hasOne(models.Permission, {
+      foreignKey: 'settingId'
+    });
   };
   return Setting;
 };

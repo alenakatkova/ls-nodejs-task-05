@@ -1,11 +1,13 @@
 const bCrypt = require('bcryptjs');
 
+const saltRounds = 10;
+
 module.exports = {
   setPassword: (password) => {
-    return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+    return bCrypt.hash(password, saltRounds);
   },
 
-  validPassword: (eneteredPassword, dbPassword) => {
-    return bCrypt.compareSync(eneteredPassword, dbPassword);
+  validPassword: (enteredPassword, dbPassword) => {
+    return bCrypt.compareSync(enteredPassword, dbPassword);
   }
 };

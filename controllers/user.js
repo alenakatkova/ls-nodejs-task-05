@@ -4,66 +4,61 @@ const Chat = require('../models').Chat;
 const News = require('../models').News;
 const Setting = require('../models').Setting;
 const psw = require('../libs/password');
-const jwt = require('jwt-simple');
-const secret = 'xxx';
+const jwt = require('jsonwebtoken');
+
+const secret = 'what a secret';
 
 module.exports = {
   register: (req, res, next) => {
-    let receivedData = '';
-    let body = {};
-    req
-      .on('data', (chunk) => {
-        receivedData += chunk;
-      })
-      .on('end', () => {
-        body = JSON.parse(receivedData);
-        console.log(body);
+    const body = JSON.parse(req.body);
 
-        const payload = { username: body.username };
+    // Переименовываем свойстов img в image
+    let userObj = Object.assign(body);
+    userObj.image = userObj.img;
+    delete userObj.img;
 
-        User
-          .create({
-            access_token: jwt.encode(payload, secret),
-            username: body.username,
-            password: psw.setPassword(body.password),
-            firstName: body.firstName,
-            surName: body.surName,
-            middleName: body.middleName,
-            image: body.img,
-            permission: {
-              chat: body.permission.chat,
-              news: body.permission.news,
-              setting: body.permission.setting
-            }
-          }, {
-            include: [{
-              model: Permission,
-              as: 'permission',
-              include: [
-                {
-                  model: Chat,
-                  as: 'chat'
-                },
-                {
-                  model: News,
-                  as: 'news'
-                },
-                {
-                  model: Setting,
-                  as: 'setting'
-                }
-              ]
-            }]
-          })
-          .then((user) => {
-            req.session.user = user.dataValues;
-            return res.status(201).send(user);
-          })
-          .catch((error) => res.status(400).send(error));
+    // Данные для создания токена
+    const payload = { username: userObj.username };
+
+    // Ищем пользователя в БД; создаем, если логин не занят
+    User.findOne({
+      where: { username: userObj.username },
+      include: [{
+        model: Permission,
+        as: 'permission',
+        include: [
+          { model: Chat, as: 'chat' },
+          { model: News, as: 'news' },
+          { model: Setting, as: 'setting' }]
+      }]
+    })
+      .then((user) => {
+        if (!user) {
+          User
+            .create(userObj, {
+              include: [{
+                model: Permission,
+                as: 'permission',
+                include: [
+                  { model: Chat, as: 'chat' },
+                  { model: News, as: 'news' },
+                  { model: Setting, as: 'setting' }]
+              }]
+            })
+            .then((user) => {
+              const userToken = jwt.sign(payload, secret, { expiresIn: 24 * 60 * 60 });
+              const result = Object.assign(user.dataValues, { access_token: userToken });
+
+              req.session.user = result;
+              return res.status(201).send(result);
+            });
+        } else {
+          res.status(404).json('Username already exists!');
+        }
       });
   },
 
   logIn: (req, res, next) => {
-    // ?
+    console.log(req.body)
   }
 };

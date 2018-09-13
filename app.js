@@ -13,8 +13,9 @@ const LocalStrategy = require('passport-local').Strategy;
 app.use(logger('dev'));
 
 // Parse incoming requests data
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.text());
+app.use(bodyParser.json());
 
 // Allow us access the cookies stored in the browser
 app.use(cookieParser());
@@ -32,6 +33,10 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
+require('./config/passport');
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Static files
 app.use(express.static(path.join(__dirname, 'dist')));

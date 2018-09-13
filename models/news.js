@@ -6,7 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     D: DataTypes.BOOLEAN
   }, {});
   News.associate = (models) => {
-    News.hasOne(models.Permission);
+    News.hasOne(models.Permission, {
+      foreignKey: 'newsId'
+    });
   };
   return News;
 };

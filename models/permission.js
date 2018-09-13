@@ -5,7 +5,9 @@ module.exports = (sequelize, DataTypes) => {
     settingId: DataTypes.INTEGER
   }, {});
   Permission.associate = (models) => {
-    Permission.hasOne(models.User);
+    Permission.hasOne(models.User, {
+      foreignKey: 'permissionId'
+    });
     Permission.belongsTo(models.Chat, {
       as: 'chat'
     });
