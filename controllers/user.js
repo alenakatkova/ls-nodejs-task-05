@@ -17,8 +17,10 @@ module.exports = {
     userObj.image = userObj.img;
     delete userObj.img;
 
-    // Данные для создания токена
+    // Создаем токен
     const payload = { username: userObj.username };
+    const userToken = jwt.sign(payload, secret, { expiresIn: 24 * 60 * 60 });
+    userObj['access_token'] = userToken;
 
     // Ищем пользователя в БД; создаем, если логин не занят
     User.findOne({
@@ -46,11 +48,9 @@ module.exports = {
               }]
             })
             .then((user) => {
-              const userToken = jwt.sign(payload, secret, { expiresIn: 24 * 60 * 60 });
-              const result = Object.assign(user.dataValues, { access_token: userToken });
-
-              req.session.user = result;
-              return res.status(201).send(result);
+              req.session.user = user.dataValues;
+              res.cookie('access_token', userToken);
+              return res.status(201).send(user.dataValues);
             });
         } else {
           res.status(404).json('Username already exists!');
@@ -60,5 +60,39 @@ module.exports = {
 
   logIn: (req, res, next) => {
     console.log(req.body)
+  },
+
+  update: (req, res, next) => {
+    const filledIn = JSON.parse(req.body);
+
+    // Ищем нужного пользователя в БД
+    User.findById(filledIn.id, {
+      include: [{
+        model: Permission,
+        as: 'permission',
+        include: [
+          { model: Chat, as: 'chat' },
+          { model: News, as: 'news' },
+          { model: Setting, as: 'setting' }]
+      }]
+    })
+      .then((old) => {
+        // Вносим изменения в ФИО
+        old.surName = (filledIn.surName !== old.surName) ? filledIn.surName : old.surName;
+        old.firstName = (filledIn.firstName !== old.firstName) ? filledIn.firstName : old.firstName;
+        old.middleName = (filledIn.middleName !== old.middleName) ? filledIn.middleName : old.middleName;
+
+        // Вносим изменения в пароль, если старый введен верно
+        if (filledIn.password && psw.validPassword(filledIn.oldPassword, old.password)) {
+          psw.setPassword(filledIn.password).then(hash => {
+            old.password = hash;
+          });
+        } else {
+          return res.status(400).send('Incorrect password');
+        }
+
+        // Сохраняем изменения в БД и возвращаем объект пользователя
+        old.save().then(user => res.status(201).send(user.dataValues));
+      });
   }
 };

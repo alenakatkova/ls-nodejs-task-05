@@ -4,8 +4,14 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --ignore sessions/ app.js"
+    "start": "nodemon app.js"
   },
+  "nodemonConfig": {
+  "ignore": [
+    "dist/",
+    "sessions/"
+  ]
+},
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
