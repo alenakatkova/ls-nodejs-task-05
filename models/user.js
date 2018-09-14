@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsTo(models.Permission, {
       as: 'permission'
     });
+    User.hasMany(models.Article, {
+      foreignKey: 'userId'
+    });
   };
   User.beforeCreate((user, options) => {
     return psw.setPassword(user.password).then(hash => {

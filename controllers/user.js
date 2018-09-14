@@ -5,7 +5,7 @@ const News = require('../models').News;
 const Setting = require('../models').Setting;
 const psw = require('../libs/password');
 const jwt = require('jsonwebtoken');
-const token = require('../config/config');
+const token = require('../config/config').token;
 
 module.exports = {
   register: (req, res, next) => {
@@ -108,7 +108,6 @@ module.exports = {
       }]
     })
       .then((old) => {
-        console.log(filledIn)
         // Вносим изменения в ФИО
         old.surName = (filledIn.surName !== old.surName) ? filledIn.surName : old.surName;
         old.firstName = (filledIn.firstName !== old.firstName) ? filledIn.firstName : old.firstName;
