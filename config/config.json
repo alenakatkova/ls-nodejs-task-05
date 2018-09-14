@@ -19,5 +19,9 @@
     "database": "test",
     "host": "127.0.0.1",
     "dialect": "postgres"
+  },
+  "token": {
+    "secret": "what a secret",
+    "expiresIn": 84600
   }
 }

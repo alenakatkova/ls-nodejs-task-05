@@ -6,8 +6,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 
 // Log requests to the console.
 app.use(logger('dev'));
@@ -33,10 +31,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
-require('./config/passport');
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Static files
 app.use(express.static(path.join(__dirname, 'dist')));
