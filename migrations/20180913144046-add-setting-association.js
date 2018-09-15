@@ -10,7 +10,7 @@ module.exports = {
           key: 'id' // key in Source model that we're referencing
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onDelete: 'SET NULL'
       }
     );
   },

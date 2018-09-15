@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       as: 'permission'
     });
     User.hasMany(models.Article, {
-      foreignKey: 'userId'
+      foreignKey: 'userId',
+      onDelete: 'CASCADE'
     });
   };
   User.beforeCreate((user, options) => {

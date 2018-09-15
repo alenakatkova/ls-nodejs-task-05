@@ -1,4 +1,3 @@
-const Article = require('../models').Article;
 const User = require('../models').User;
 const Permission = require('../models').Permission;
 const Chat = require('../models').Chat;
@@ -51,31 +50,22 @@ module.exports = {
   },
 
   deleteUser: (req, res, next) => {
-    console.log(req.params)
     User
-      .findById(req.params.id, {
-        include: [{
-          model: Permission,
-          as: 'permission',
-          include: [
-            { model: Chat, as: 'chat' },
-            { model: News, as: 'news' },
-            { model: Setting, as: 'setting' }]
-        }]
+      .findById(req.params.id)
+      .then(user => {
+        // перед удаление пользователя удаляем из таблиц с настройками доступа относящиеся к нему строки
+        Permission.findById(user.permissionId).then(permission => {
+          Chat.findById(permission.chatId).then(chat => chat.destroy());
+          Setting.findById(permission.settingId).then(setting => setting.destroy());
+          News.findById(permission.newsId).then(news => news.destroy());
+          permission.destroy();
+        });
+        user.destroy(); // удаление пользователя из БДa
       })
-      .then(user => user.destroy({
-        include: [{
-          model: Permission,
-          as: 'permission',
-          include: [
-            { model: Chat, as: 'chat' },
-            { model: News, as: 'news' },
-            { model: Setting, as: 'setting' }]
-        }]})) // удаление новости из БД
       .then(() => {
         User
-          .findAll() // ищем в т.ч. данные об авторе новости
-          .then(users => res.status(200).send(users)); // возвращаем все новости
+          .findAll()
+          .then(users => res.status(200).send(users));
       });
   }
 };
