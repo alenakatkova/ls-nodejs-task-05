@@ -96,6 +96,26 @@ module.exports = {
       });
   },
 
+  authFromToken: (req, res, next) => {
+    if (req.cookies.access_token) {
+      User
+        .findOne({
+          where: { access_token: req.cookies.access_token },
+          include: [{
+            model: Permission,
+            as: 'permission',
+            include: [
+              { model: Chat, as: 'chat' },
+              { model: News, as: 'news' },
+              { model: Setting, as: 'setting' }]
+          }]
+        })
+        .then((user) => {
+          return res.status(201).send(user.dataValues);
+        });
+    }
+  },
+
   update: (req, res, next) => {
     const filledIn = JSON.parse(req.body);
 

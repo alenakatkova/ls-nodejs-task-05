@@ -6,6 +6,7 @@ const settings = require('../controllers/settings');
 
 // User
 router.post('/login', user.logIn);
+router.post('/authFromToken', user.authFromToken);
 router.post('/saveNewUser', user.register);
 router.put('/updateUser/:id', user.update);
 router.post('/saveUserImage/:id', user.saveImage);
