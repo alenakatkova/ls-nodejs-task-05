@@ -1,5 +1,8 @@
 ## Homework №5: Node.js - Corporate System _"LoftSystem"_ course.
 
+Deployed:  
+https://ls-nodejs-task-05.herokuapp.com/
+
 ### Start
 
 Install sequelize-cli and nodemon
