@@ -7,19 +7,22 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const http = require('http');
+const server = http.createServer(app);
+const io = require('socket.io').listen(server);
 
-// Log requests to the console.
+// Отобращаем реквесты в консили
 app.use(logger('dev'));
 
-// Parse incoming requests data
+// Парсим входящие данные
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.text());
 app.use(bodyParser.json());
 
-// Allow us access the cookies stored in the browser
+// Обеспечиваем доступ к хранимым в браузере cookies
 app.use(cookieParser());
 
-// Session settings
+// Настройки сессии
 app.use(session({
   store: new FileStore(),
   secret: 'secret of loftschool',
@@ -33,13 +36,17 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Static files
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'dist'))); // статические файлы
 
 app.use('/api', require('./routes/api_router')); // обработка запросов к /api
 app.use('*', require('./routes/basic_router')); // любой get-запрос вернет index.html
 
-app.listen(3000, function () {
+// Подключаем чат
+const initializeChat = require('./config/initializeChat');
+initializeChat(io);
+
+server.listen(3000, function () {
+  // создаем папку для загружаемых фотографий
   if (!fs.existsSync('./dist/upload')) {
     fs.mkdirSync('./dist/upload');
   }
