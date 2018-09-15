@@ -47,7 +47,7 @@ initializeChat(io);
 const PORT = process.env.PORT || 3000;
 
 if (require.main === module) {
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     if (!fs.existsSync('./public/upload')) {
       fs.mkdirSync('./public/upload');
     }
