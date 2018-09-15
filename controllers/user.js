@@ -6,6 +6,9 @@ const Setting = require('../models').Setting;
 const psw = require('../libs/password');
 const jwt = require('jsonwebtoken');
 const token = require('../config/config').token;
+const formidable = require('formidable');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   register: (req, res, next) => {
@@ -128,5 +131,36 @@ module.exports = {
         // Сохраняем изменения в БД и возвращаем объект пользователя
         old.save().then(user => res.status(201).send(user.dataValues));
       });
+  },
+
+  saveImage: (req, res, next) => {
+    let form = new formidable.IncomingForm();
+    const upload = './dist/upload';
+    const userId = req.params.id;
+    form.uploadDir = path.join(process.cwd(), upload);
+
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        return next(err);
+      }
+
+      let oldPath = files[userId].path;
+      let newPath = path.join(upload, files[userId].name)
+
+      // Загрузка фотографии в папку upload
+      fs.rename(oldPath, newPath, function (err) {
+        if (err) {
+          console.error(err);
+          fs.unlinkSync(newPath);
+          fs.rename(oldPath, newPath);
+        }
+
+        // Сохранение пути до фотографии в БД
+        User.findById(userId).then(user => {
+          user.image = path.join('./upload', files[userId].name);
+          user.save().then(user => res.status(201).send({ path: user.image }));
+        });
+      });
+    });
   }
 };

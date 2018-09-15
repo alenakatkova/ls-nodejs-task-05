@@ -8,6 +8,7 @@ const settings = require('../controllers/settings');
 router.post('/login', user.logIn);
 router.post('/saveNewUser', user.register);
 router.put('/updateUser/:id', user.update);
+router.post('/saveUserImage/:id', user.saveImage);
 
 // News
 router.put('/updateNews/:id', articles.update);

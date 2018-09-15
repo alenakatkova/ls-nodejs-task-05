@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -39,5 +40,8 @@ app.use('/api', require('./routes/api_router')); // обработка запр�
 app.use('*', require('./routes/basic_router')); // любой get-запрос вернет index.html
 
 app.listen(3000, function () {
+  if (!fs.existsSync('./dist/upload')) {
+    fs.mkdirSync('./dist/upload');
+  }
   console.log('Example app listening on port 3000!');
 });
