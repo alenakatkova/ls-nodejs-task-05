@@ -1,6 +1,6 @@
 // Любой get-запрос вернет index.html
 // module.exports.getHome = ('*', (req, res) => {
-//   res.sendFile('./dist/index.html', {
+//   res.sendFile('./publicpublic/index.html', {
 //     root: process.cwd()
 //   });
 // });

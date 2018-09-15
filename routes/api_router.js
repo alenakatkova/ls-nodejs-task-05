@@ -22,4 +22,10 @@ router.get('/getUsers', settings.getUsers);
 router.put('/updateUserPermission/:id', settings.updateUserPermission);
 router.delete('/deleteUser/:id', settings.deleteUser);
 
+const path = require('path');
+
+router.get('*', function (req, res, next) {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
 module.exports = router;

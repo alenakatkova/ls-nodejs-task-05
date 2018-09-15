@@ -155,7 +155,7 @@ module.exports = {
 
   saveImage: (req, res, next) => {
     let form = new formidable.IncomingForm();
-    const upload = './dist/upload';
+    const upload = './public/upload';
     const userId = req.params.id;
     form.uploadDir = path.join(process.cwd(), upload);
 
