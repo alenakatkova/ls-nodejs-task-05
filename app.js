@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'dist'))); // статические
 app.use('/api', require('./routes/api_router')); // обработка запросов к /api
 app.use('*', (req, res) => {
   res.sendFile('./dist/index.html', {
-    root: process.cwd()
+    root: __dirname
   });
 });
 
