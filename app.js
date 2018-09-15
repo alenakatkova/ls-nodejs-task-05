@@ -37,7 +37,8 @@ app.use(session({
 }));
 
 app.use(express.static(path.join(__dirname, 'public'))); // статические файлы
-app.use('/', require('./routes'));
+app.use('/api', require('./routes/api_router')); // api запросы
+app.use('*', require('./routes/basic_router')); // любой get-запрос вернет index.html
 
 // Подключаем чат
 const initializeChat = require('./config/initializeChat');
