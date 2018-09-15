@@ -39,9 +39,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'dist'))); // статические файлы
 
 app.use('/api', require('./routes/api_router')); // обработка запросов к /api
-app.use('/', (req, res, next) => {
-  res.sendFile(path.join(__dirname, './dist/index.html'));
-});
+app.use('*', require('./routes/basic_router')); // любой get-запрос вернет index.html
 
 // Подключаем чат
 const initializeChat = require('./config/initializeChat');

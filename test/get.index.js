@@ -8,7 +8,7 @@ describe('/GET', () => {
   });
 
   it('it should GET index', (done) => {
-    request('http://127.0.0.1:3000/', (err, response, body) => {
+    request('http://127.0.0.1:3000', (err, response, body) => {
       expect(response.statusCode)
         .to
         .have
