@@ -37,21 +37,11 @@ app.use(session({
 }));
 
 app.use(express.static(path.join(__dirname, 'public'))); // статические файлы
-app.use('/', require('./routes/api_router'));
-//app.use('/api', require('./routes/api_router')); // обработка запросов к /api
-//app.use('*', require('./routes/basic_router')); // любой get-запрос вернет index.html
+app.use('/', require('./routes'));
 
 // Подключаем чат
 const initializeChat = require('./config/initializeChat');
 initializeChat(io);
-
-// server.listen(3000, function () {
-//   // создаем папку для загружаемых фотографий
-//   if (!fs.existsSync('./public/upload')) {
-//     fs.mkdirSync('./public/upload');
-//   }
-//   console.log('Example app listening on port 3000!');
-// });
 
 const PORT = process.env.PORT || 3000;
 
