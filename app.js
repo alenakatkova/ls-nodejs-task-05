@@ -45,10 +45,23 @@ app.use('*', require('./routes/basic_router')); // любой get-запрос �
 const initializeChat = require('./config/initializeChat');
 initializeChat(io);
 
-server.listen(3000, function () {
-  // создаем папку для загружаемых фотографий
-  if (!fs.existsSync('./dist/upload')) {
-    fs.mkdirSync('./dist/upload');
-  }
-  console.log('Example app listening on port 3000!');
-});
+// server.listen(3000, function () {
+//   // создаем папку для загружаемых фотографий
+//   if (!fs.existsSync('./dist/upload')) {
+//     fs.mkdirSync('./dist/upload');
+//   }
+//   console.log('Example app listening on port 3000!');
+// });
+
+const PORT = process.env.PORT || 3000;
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    if (!fs.existsSync('./dist/upload')) {
+      fs.mkdirSync('./dist/upload');
+    }
+    console.log(`Server start ${PORT}`);
+  });
+} else {
+  module.exports = app;
+}
