@@ -2,6 +2,7 @@
 
 Deployed:  
 https://ls-nodejs-task-05.herokuapp.com/
+Admin: login 'admin', password 'admin'
 
 ### Start
 
