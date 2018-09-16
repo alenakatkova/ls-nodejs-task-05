@@ -1,4 +1,4 @@
-let users = {}; // все пользователи чата
+const users = {}; // все пользователи чата
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
@@ -8,8 +8,8 @@ module.exports = (io) => {
     users[socket.id].id = socket.id;
 
     // сообщаем всем, что появился новый пользователь
-    socket.emit('new user', users[socket.id]);
-    socket.broadcast.emit('all users', users);
+    socket.emit('all users', users);
+    socket.broadcast.emit('new user', users[socket.id]);
 
     // обрабатываем событие, когда пользователь что-то написал другому пользователю
     socket.on('chat message', (data, recipient) => {
