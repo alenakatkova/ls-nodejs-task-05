@@ -8,7 +8,7 @@ module.exports = (io) => {
     users[socket.id].id = socket.id;
 
     // сообщаем всем, что появился новый пользователь
-    socket.emit('new user', users[socket.id]);
+    socket.emit('new user', users);
     socket.broadcast.emit('all users', users);
 
     // обрабатываем событие, когда пользователь что-то написал другому пользователю
